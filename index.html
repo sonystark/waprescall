@@ -769,14 +769,14 @@
     <div id="app-frame">
         <!-- AUDIO PLAYERS -->
         <audio id="ringtone-audio" preload="auto" loop></audio>
-        <audio id="call-voice-audio" preload="auto" loop></audio>
+        <audio id="call-voice-audio" preload="auto"></audio>
 
         <!-- ======================================================================
              INCOMING CALL TOP NOTIFICATION POP-UP CARD
              ====================================================================== -->
         <div id="incoming-banner" role="alertdialog" aria-label="Panggilan masuk WhatsApp">
             <div class="banner-top">
-                <img id="banner-avatar" class="banner-avatar" src="prabowo.jpg" alt="Caller Avatar">
+                <img id="banner-avatar" class="banner-avatar" src="" alt="Caller Avatar">
                 <div class="banner-text">
                     <div class="banner-app-label">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -892,7 +892,7 @@
             <div class="wa-chat-list">
                 <!-- Pinned / Top Chat: Prabowo Subianto -->
                 <div class="chat-row">
-                    <img id="chat-list-avatar" class="chat-avatar" src="prabowo.jpg" alt="Prabowo Subianto">
+                    <img id="chat-list-avatar" class="chat-avatar" src="" alt="Prabowo Subianto">
                     <div class="chat-info">
                         <div class="chat-top-row">
                             <span id="chat-list-name" class="chat-name">Prabowo Subianto</span>
@@ -1083,7 +1083,7 @@
 
             <!-- Center Circular Caller Display Picture -->
             <div class="call-avatar-stage">
-                <img id="call-main-avatar" class="call-main-avatar" src="prabowo.jpg" alt="Prabowo Subianto">
+                <img id="call-main-avatar" class="call-main-avatar" src="" alt="Prabowo Subianto">
             </div>
 
             <!-- Bottom 3x2 Rounded Dark Control Card -->
@@ -1205,10 +1205,10 @@
            ========================================================================== */
         const CONFIG = {
             callerName: "Prabowo Subianto",
-            avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop&q=85",
-            ringtoneUrl: "https://pixabay.com/sound-effects/musical-ringtone-030-437513/",
+            avatarUrl: "prabowo.jpg",
+            ringtoneUrl: "ringtone.mp3",
             ringtoneFallbackUrl: "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_clock.ogg",
-            callVoiceUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+            callVoiceUrl: "lantik_wapres_baru.MP3",
             incomingDelayMs: 5000 // 5 detik setelah halaman dimuat
         };
 
