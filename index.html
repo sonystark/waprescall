@@ -2,323 +2,1424 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Prank Call - Sony Meydianto</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WhatsApp Prank Call - SONYSTARK</title>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        /* ==========================================================================
+           1. RESET & BASE LAYOUT (Zero external dependencies for instant rendering)
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #050a0e;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #e9edef;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Vertical Smartphone Container */
+        #app-frame {
+            position: relative;
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            max-height: 932px;
+            background-color: #0b141a;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+        }
+
+        @media (min-width: 500px) {
+            #app-frame {
+                height: 92vh;
+                border-radius: 44px;
+                border: 8px solid #1f2c34;
+            }
+        }
+
+        /* ==========================================================================
+           2. SHARED IOS STATUS BAR
+           ========================================================================== */
+        .ios-status-bar {
+            width: 100%;
+            padding: 12px 20px 6px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            user-select: none;
+            z-index: 15;
+            flex-shrink: 0;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-wa-pill {
+            width: 19px;
+            height: 19px;
+            border-radius: 5px;
+            background-color: #25d366;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .status-dots {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dnd-badge {
+            width: 16px;
+            height: 14px;
+            border-radius: 3px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #0b141a;
+            font-size: 9px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .battery-pill {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .battery-body {
+            background-color: rgba(255, 255, 255, 0.32);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 4px;
+            line-height: 1.2;
+        }
+
+        .battery-tip {
+            width: 2px;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.45);
+            border-radius: 0 2px 2px 0;
+            margin-left: 1px;
+        }
+
+        .green-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #25d366;
+        }
+
+        /* ==========================================================================
+           3. VIEW 1: WHATSAPP HOME SCREEN
+           ========================================================================== */
+        #home-screen {
+            position: absolute;
+            inset: 0;
+            background-color: #0b141a;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            transition: opacity 0.25s ease;
+        }
+
+        #home-screen.hidden-view {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .wa-header {
+            padding: 8px 16px 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             background-color: #0b141a;
         }
-        /* Custom scrollbar for chat */
-        ::-webkit-scrollbar {
-            width: 4px;
+
+        .wa-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #e9edef;
+            letter-spacing: -0.3px;
         }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+
+        .wa-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: #e9edef;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            border-radius: 50%;
+            transition: background-color 0.15s;
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Search Bar */
+        .wa-search-wrap {
+            padding: 0 14px 10px 14px;
+        }
+
+        .wa-search-bar {
+            background-color: #202c33;
+            border-radius: 24px;
+            padding: 9px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #8696a0;
+            font-size: 14.5px;
+        }
+
+        /* Filter Chips (All, Unread, Favorites, Groups) */
+        .wa-filter-chips {
+            padding: 2px 14px 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .wa-filter-chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            background-color: #202c33;
+            color: #8696a0;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 18px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: none;
+        }
+
+        .chip.active {
+            background-color: #0a332c;
+            color: #25d366;
+        }
+
+        /* Chat List */
+        .wa-chat-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 72px;
+        }
+
+        .chat-row {
+            display: flex;
+            align-items: center;
+            padding: 11px 16px;
+            gap: 14px;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+
+        .chat-row:hover {
+            background-color: #182229;
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            background-color: #202c33;
+        }
+
+        .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 3px;
+        }
+
+        .chat-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e9edef;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: #8696a0;
+            flex-shrink: 0;
+        }
+
+        .chat-time.unread {
+            color: #25d366;
+            font-weight: 600;
+        }
+
+        .chat-bottom-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .chat-preview {
+            font-size: 13.5px;
+            color: #8696a0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .unread-badge {
+            background-color: #25d366;
+            color: #0b141a;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            flex-shrink: 0;
+        }
+
+        /* Floating New Chat Button */
+        .wa-fab {
+            position: absolute;
+            right: 18px;
+            bottom: 84px;
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            background-color: #25d366;
+            color: #0b141a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Bottom Navigation Bar (Chats, Updates, Communities, Calls) */
+        .wa-bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 68px;
+            background-color: #0b141a;
+            border-top: 1px solid #1f2c34;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding-bottom: 6px;
+            z-index: 12;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #e9edef;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .nav-icon-pill {
+            padding: 4px 18px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-item.active .nav-icon-pill {
+            background-color: #0a332c;
+            color: #25d366;
+        }
+
+        .nav-item.active span {
+            font-weight: 700;
+        }
+
+        /* ==========================================================================
+           4. INCOMING CALL TOP NOTIFICATION BANNER / CARD
+           ========================================================================== */
+        #incoming-banner {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            z-index: 50;
+            background-color: rgba(28, 39, 46, 0.97);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 22px;
+            padding: 14px 16px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(14px);
+            transform: translateY(-160%);
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        #incoming-banner.visible {
+            transform: translateY(0);
+        }
+
+        .banner-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .banner-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #25d366;
+            flex-shrink: 0;
+        }
+
+        .banner-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .banner-app-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #25d366;
+            margin-bottom: 2px;
+        }
+
+        .banner-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.25;
+        }
+
+        .banner-sub {
+            font-size: 12px;
+            color: #9aa5ac;
+            margin-top: 2px;
+        }
+
+        .banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .banner-btn {
+            flex: 1;
+            height: 42px;
+            border-radius: 21px;
+            border: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .btn-decline {
+            background-color: #ea0038;
+        }
+
+        .btn-answer {
+            background-color: #25d366;
+            animation: pulseAnswer 1.5s infinite;
+        }
+
+        @keyframes pulseAnswer {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        /* ==========================================================================
+           5. VIEW 2: ACTIVE WHATSAPP CALL SCREEN (Matches Reference Screenshot)
+           ========================================================================== */
+        #call-screen {
+            position: absolute;
+            inset: 0;
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #0b141a;
+            /* WhatsApp Dark Doodle Wallpaper Pattern */
+            background-image: url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23182229' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 24h24a4 4 0 0 1 4 4v13a4 4 0 0 1-4 4H30l-6 5v-5h-2a4 4 0 0 1-4-4V28a4 4 0 0 1 4-4z'/%3E%3Cpath d='M128 22c2 0 4 2 4 4 0 9-7 16-16 16-2 0-4-2-4-4l2-3c1-1 2-1 3 0l2 1c2-1 4-3 5-5l-1-2c-1-1-1-2 0-3l3-4z'/%3E%3Ccircle cx='85' cy='38' r='11'/%3E%3Ccircle cx='81' cy='35' r='1' fill='%23182229'/%3E%3Ccircle cx='89' cy='35' r='1' fill='%23182229'/%3E%3Cpath d='M80 41c2 2.5 8 2.5 10 0'/%3E%3Crect x='24' y='82' width='24' height='16' rx='3'/%3E%3Ccircle cx='36' cy='90' r='4'/%3E%3Cpath d='M30 82l2-3h8l2 3'/%3E%3Cpath d='M92 86c-2-3.5-7-3.5-9 0-2-3.5-7-3.5-9 0-2 3.5 0 8 9 13 9-5 11-9.5 9-13z'/%3E%3Crect x='138' y='76' width='9' height='16' rx='4.5'/%3E%3Cpath d='M133 87a9.5 9.5 0 0 0 19 0M142.5 96.5v5.5M138 102h9'/%3E%3Cpolygon points='34,136 37,144 45,144 39,149 41,157 34,152 27,157 29,149 23,144 31,144'/%3E%3Crect x='80' y='142' width='16' height='12' rx='2'/%3E%3Cpath d='M84 142v-4.5a4 4 0 0 1 8 0v4.5'/%3E%3Cpath d='M130 144l22-9-7 22-5-8-10-5z'/%3E%3Ccircle cx='160' cy='50' r='3.5'/%3E%3Cpath d='M163.5 50V36l7-2.5v4.5l-7 2.5'/%3E%3Ccircle cx='60' cy='116' r='4.5'/%3E%3Cpath d='M60 107v2.5M60 122.5v2.5M51 116h2.5M66.5 116h2.5'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: 180px 180px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            user-select: none;
+        }
+
+        #call-screen.active-view {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .call-header {
+            padding: 8px 16px 4px 16px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .call-header-circle-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: rgba(31, 44, 51, 0.92);
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.15s, transform 0.1s;
+        }
+
+        .call-header-circle-btn:active {
+            transform: scale(0.94);
+        }
+
+        .call-header-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-top: 2px;
+        }
+
+        .call-caller-name {
+            font-size: 19px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .call-encrypted-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12.5px;
+            color: #9aa5ac;
+            margin-top: 3px;
+        }
+
+        .call-timer-text {
+            font-size: 12.5px;
+            color: #9aa5ac;
+            margin-top: 3px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Center Profile Photo */
+        .call-avatar-stage {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .call-main-avatar {
+            width: 215px;
+            height: 215px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+            background-color: #1f2c34;
+        }
+
+        /* Bottom 3x2 Control Card */
+        .call-controls-wrapper {
+            padding: 0 14px 18px 14px;
+        }
+
+        .call-controls-card {
+            background-color: rgba(28, 36, 41, 0.96);
+            border-radius: 32px;
+            padding: 26px 20px 22px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            row-gap: 22px;
+            column-gap: 14px;
+        }
+
+        .control-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-circle-btn {
+            width: 66px;
+            height: 66px;
+            border-radius: 50%;
+            background-color: #2a3339;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.15s, color 0.15s, transform 0.1s;
+        }
+
+        .control-circle-btn:active {
+            transform: scale(0.94);
+        }
+
+        .control-circle-btn.toggled {
+            background-color: #ffffff;
+            color: #1c2429;
+        }
+
+        .control-circle-btn.end-btn {
+            background-color: #ea0038;
+            color: #ffffff;
+        }
+
+        .control-circle-btn.end-btn:hover {
+            background-color: #d10032;
+        }
+
+        .control-label {
+            font-size: 12.5px;
+            color: #e9edef;
+            font-weight: 400;
+        }
+
+        /* ==========================================================================
+           6. SETTINGS MODAL (Accessible via 3-dots menu on Home Screen)
+           ========================================================================== */
+        #settings-modal {
+            position: absolute;
+            inset: 0;
+            z-index: 60;
+            background-color: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        #settings-modal.open {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 100%;
+            background-color: #1f2c34;
+            border: 1px solid #32414b;
+            border-radius: 22px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #2e3d46;
+            padding-bottom: 10px;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            color: #9aa5ac;
+        }
+
+        .form-input {
+            width: 100%;
+            background-color: #111b21;
+            border: 1px solid #32414b;
+            border-radius: 10px;
+            padding: 9px 12px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #25d366;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 6px;
+        }
+
+        .modal-btn {
+            padding: 9px 16px;
+            border-radius: 10px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-btn-secondary {
+            background-color: #2a3942;
+            color: #25d366;
+        }
+
+        .modal-btn-primary {
+            background-color: #25d366;
+            color: #0b141a;
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-0 sm:p-4">
+<body>
 
-    <!-- Mobile Container Simulation -->
-    <div id="app-container" class="w-full sm:max-w-[420px] h-[100vh] sm:h-[850px] bg-[#111b21] text-[#e9edef] sm:rounded-[40px] shadow-2xl flex flex-col relative overflow-hidden border-0 sm:border-[8px] sm:border-[#202c33]">
-        
-        <!-- AUDIO ELEMENTS -->
-        <!-- Ringtone audio -->
-        <audio id="ringtoneAudio" src="ringtone.mp3" preload="auto" loop></audio>
-        <!-- Call Voice Audio -->
-        <audio id="callAudio" src="lantik_wapres_baru.MP3" preload="auto"></audio>
+    <div id="app-frame">
+        <!-- AUDIO PLAYERS -->
+        <audio id="ringtone-audio" preload="auto" loop></audio>
+        <audio id="call-voice-audio" preload="auto" loop></audio>
 
-        <!-- TOP NOTIFICATION BANNER / CARD (Initially hidden) -->
-        <div id="incomingNotification" class="absolute top-0 left-0 right-0 z-50 transform -translate-y-full transition-transform duration-500 ease-out p-3 pointer-events-auto">
-            <div class="bg-[#202c33] border border-[#374248] shadow-2xl rounded-2xl p-4 flex items-center justify-between text-white backdrop-blur-md bg-opacity-95">
-                <div class="flex items-center space-x-3 overflow-hidden">
-                    <img src="prabowo.jpg" alt="Prabowo Subianto" class="w-12 h-12 rounded-full object-cover border-2 border-[#00a884]">
-                    <div class="truncate">
-                        <div class="flex items-center space-x-1 text-xs text-[#00a884] font-semibold">
-                            <i class="fab fa-whatsapp"></i>
-                            <span>Panggilan masuk WhatsApp</span>
-                        </div>
-                        <h4 class="font-bold text-sm text-[#e9edef] truncate">Prabowo Subianto</h4>
-                        <p class="text-xs text-gray-400">Ketuk untuk menjawab</p>
+        <!-- ======================================================================
+             INCOMING CALL TOP NOTIFICATION POP-UP CARD
+             ====================================================================== -->
+        <div id="incoming-banner" role="alertdialog" aria-label="Panggilan masuk WhatsApp">
+            <div class="banner-top">
+                <img id="banner-avatar" class="banner-avatar" src="prabowo.jpg" alt="Caller Avatar">
+                <div class="banner-text">
+                    <div class="banner-app-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/>
+                        </svg>
+                        <span>WhatsApp</span>
                     </div>
+                    <div id="banner-title" class="banner-title">Prabowo Subianto</div>
+                    <div class="banner-sub">ada panggilan masuk</div>
                 </div>
-                <div class="flex items-center space-x-2 flex-shrink-0">
-                    <!-- Decline Button: completely non-functional as requested -->
-                    <button id="declineBtn" class="w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-lg transition active:scale-95" title="Tolak">
-                        <i class="fas fa-phone-slash text-sm"></i>
-                    </button>
-                    <!-- Answer Button -->
-                    <button id="answerBtn" class="w-10 h-10 rounded-full bg-[#00a884] hover:bg-[#008f72] text-white flex items-center justify-center shadow-lg transition active:scale-95 animate-bounce" title="Jawab">
-                        <i class="fas fa-phone text-sm"></i>
-                    </button>
-                </div>
+            </div>
+            <div class="banner-actions">
+                <!-- Decline Button: Intentionally does nothing when clicked -->
+                <button id="btn-decline" type="button" class="banner-btn btn-decline">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.956.956 0 0 1-.29-.7c0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28a11.27 11.27 0 0 0-2.67-1.85.996.996 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/>
+                    </svg>
+                    <span>Tolak</span>
+                </button>
+                <!-- Answer Button -->
+                <button id="btn-answer" type="button" class="banner-btn btn-answer">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
+                    <span>Jawab</span>
+                </button>
             </div>
         </div>
 
-        <!-- VIEW 1: WHATSAPP CHAT HOME SCREEN -->
-        <div id="chatHomeScreen" class="flex flex-col h-full w-full absolute inset-0 z-10 transition-opacity duration-300">
-            <!-- WhatsApp Header -->
-            <div class="bg-[#1f2c34] px-4 py-3 flex items-center justify-between shadow-md">
-                <div class="flex items-center space-x-2">
-                    <h1 class="text-[#e9edef] text-xl font-bold tracking-wide">WhatsApp</h1>
+        <!-- ======================================================================
+             VIEW 1: STANDARD WHATSAPP HOME SCREEN
+             ====================================================================== -->
+        <div id="home-screen">
+            <!-- Top iOS Status Bar -->
+            <div class="ios-status-bar">
+                <div class="status-left">
+                    <span class="live-clock">1:28</span>
+                    <span class="status-wa-pill">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771z"/>
+                        </svg>
+                    </span>
+                    <span class="status-dots">•••</span>
                 </div>
-                <div class="flex items-center space-x-5 text-[#aebac1] text-lg">
-                    <button><i class="fas fa-camera"></i></button>
-                    <button><i class="fas fa-search"></i></button>
-                    <button class="relative">
-                        <i class="fas fa-ellipsis-v"></i>
+                <div class="status-right">
+                    <span class="dnd-badge">✕</span>
+                    <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor">
+                        <rect x="0" y="8" width="2.5" height="4" rx="0.5"/>
+                        <rect x="4" y="6" width="2.5" height="6" rx="0.5"/>
+                        <rect x="8" y="3" width="2.5" height="9" rx="0.5"/>
+                        <rect x="12" y="0" width="2.5" height="12" rx="0.5"/>
+                    </svg>
+                    <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor">
+                        <path d="M8 9.6a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8zm-3.6-2.2a5.2 5.2 0 0 1 7.2 0l1.2-1.3a7 7 0 0 0-9.6 0l1.2 1.3zm-2.5-2.6a8.8 8.8 0 0 1 12.2 0l1.2-1.3a10.6 10.6 0 0 0-14.6 0l1.2 1.3z"/>
+                    </svg>
+                    <div class="battery-pill">
+                        <span class="battery-body">69</span>
+                        <span class="battery-tip"></span>
+                    </div>
+                    <span class="green-dot"></span>
+                </div>
+            </div>
+
+            <!-- WhatsApp App Header -->
+            <div class="wa-header">
+                <div class="wa-title">WhatsApp</div>
+                <div class="wa-header-actions">
+                    <!-- Camera Icon -->
+                    <button type="button" class="icon-btn" title="Kamera">
+                        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                    </button>
+                    <!-- Search Icon -->
+                    <button type="button" class="icon-btn" title="Cari">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                    </button>
+                    <!-- Three Dots Settings Trigger -->
+                    <button id="open-settings-btn" type="button" class="icon-btn" title="Pengaturan Prank Call">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="5" r="2"/>
+                            <circle cx="12" cy="12" r="2"/>
+                            <circle cx="12" cy="19" r="2"/>
+                        </svg>
                     </button>
                 </div>
             </div>
 
-            <!-- WhatsApp Tabs -->
-            <div class="bg-[#1f2c34] flex border-b border-[#222d34] text-[#aebac1] font-medium text-sm">
-                <div class="flex-1 py-3 text-center border-b-2 border-[#00a884] text-[#00a884] cursor-pointer">Chats</div>
-                <div class="flex-1 py-3 text-center cursor-pointer">Updates</div>
-                <div class="flex-1 py-3 text-center cursor-pointer">Calls</div>
+            <!-- Search Bar -->
+            <div class="wa-search-wrap">
+                <div class="wa-search-bar">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <span>Ask Meta AI or Search</span>
+                </div>
+            </div>
+
+            <!-- Filter Tabs (All, Unread, Favorites, Groups) -->
+            <div class="wa-filter-chips">
+                <button type="button" class="chip active">All</button>
+                <button type="button" class="chip">Unread</button>
+                <button type="button" class="chip">Favorites</button>
+                <button type="button" class="chip">Groups</button>
             </div>
 
             <!-- Chat List -->
-            <div class="flex-1 overflow-y-auto bg-[#111b21]">
-                <!-- Chat Item: Sony Meydianto -->
-                <div class="flex items-center px-4 py-3 hover:bg-[#202c33] cursor-pointer transition border-b border-[#222d34]/40">
-                    <img src="prabowo.jpg" alt="Prabowo Subianto" class="w-12 h-12 rounded-full object-cover mr-3 flex-shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-baseline mb-1">
-                            <h3 class="font-semibold text-sm text-[#e9edef] truncate">Prabowo Subianto</h3>
-                            <span class="text-xs text-[#00a884]">11:32</span>
+            <div class="wa-chat-list">
+                <!-- Pinned / Top Chat: Prabowo Subianto -->
+                <div class="chat-row">
+                    <img id="chat-list-avatar" class="chat-avatar" src="prabowo.jpg" alt="Prabowo Subianto">
+                    <div class="chat-info">
+                        <div class="chat-top-row">
+                            <span id="chat-list-name" class="chat-name">Prabowo Subianto</span>
+                            <span class="chat-time unread">1:27</span>
                         </div>
-                        <p class="text-xs text-[#8696a0] truncate flex items-center">
-                            <i class="fas fa-check-double text-[#00a884] mr-1"></i> Kinong, bisa telepon sekarang? Ada urusan penting...
-                        </p>
+                        <div class="chat-bottom-row">
+                            <span class="chat-preview">Kinong, saya mau telepon sebentar lewat WA ya, penting!</span>
+                            <span class="unread-badge">2</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Dummy Chat 2 -->
-                <div class="flex items-center px-4 py-3 hover:bg-[#202c33] cursor-pointer transition border-b border-[#222d34]/40">
-                    <img src="gibran.jpg" alt="Gibran" class="w-12 h-12 rounded-full object-cover mr-3 flex-shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-baseline mb-1">
-                            <h3 class="font-semibold text-sm text-[#e9edef] truncate">Gibran Rakabuming Raka</h3>
-                            <span class="text-xs text-[#8696a0]">Kemarin</span>
+                <!-- Chat 2 -->
+                <div class="chat-row">
+                    <img class="chat-avatar" src="istri.jpg" alt="Istri">
+                    <div class="chat-info">
+                        <div class="chat-top-row">
+                            <span class="chat-name">Istri Tercinta ❤️</span>
+                            <span class="chat-time">12:45</span>
                         </div>
-                        <p class="text-xs text-[#8696a0] truncate">Bro lagi dimana? aku udah dipecat nih, ngopi yok.</p>
+                        <div class="chat-bottom-row">
+                            <span class="chat-preview">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#53bdeb" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                    <polyline points="23 11 14 20 11 17"/>
+                                </svg>
+                                Siapa yang habiskan ikan asin didapur?
+                            </span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Dummy Chat 3 -->
-                <div class="flex items-center px-4 py-3 hover:bg-[#202c33] cursor-pointer transition border-b border-[#222d34]/40">
-                    <img src="gym.jpg" alt="Grup Gym" class="w-12 h-12 rounded-full object-cover mr-3 flex-shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-baseline mb-1">
-                            <h3 class="font-semibold text-sm text-[#e9edef] truncate">Grup Gym Sosok</h3>
-                            <span class="text-xs text-[#8696a0]">09:15</span>
+                <!-- Chat 3 -->
+                <div class="chat-row">
+                    <img class="chat-avatar" src="gym.jpg" alt="Grup Gym">
+                    <div class="chat-info">
+                        <div class="chat-top-row">
+                            <span class="chat-name">Grup Gym Sosok</span>
+                            <span class="chat-time">11:10</span>
                         </div>
-                        <p class="text-xs text-[#8696a0] truncate">Dewa: Usah lupa bah jadwal kelak malam.</p>
+                        <div class="chat-bottom-row">
+                            <span class="chat-preview">Dewa: Jangan lupa jadwal nanti sore bro</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Dummy Chat 4 -->
-                <div class="flex items-center px-4 py-3 hover:bg-[#202c33] cursor-pointer transition border-b border-[#222d34]/40">
-                    <img src="jokowi.jpg" alt="Joko Widodo" class="w-12 h-12 rounded-full object-cover mr-3 flex-shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-baseline mb-1">
-                            <h3 class="font-semibold text-sm text-[#e9edef] truncate">Joko Widodo</h3>
-                            <span class="text-xs text-[#8696a0]">Senin</span>
+                <!-- Chat 4 -->
+                <div class="chat-row">
+                    <img class="chat-avatar" src="gibran.jpg" alt="Mas Gibran">
+                    <div class="chat-info">
+                        <div class="chat-top-row">
+                            <span class="chat-name">Mas Gibran</span>
+                            <span class="chat-time">Kemarin</span>
                         </div>
-                        <p class="text-xs text-[#8696a0] truncate">Ijazah asli saya titip jangan sampai hilang ya.</p>
+                        <div class="chat-bottom-row">
+                            <span class="chat-preview">bro aku baru dipecat nih, ngopi yok!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat 5 -->
+                <div class="chat-row">
+                    <img class="chat-avatar" src="jokowi.jpg" alt="Jokowi">
+                    <div class="chat-info">
+                        <div class="chat-top-row">
+                            <span class="chat-name">Jokowi</span>
+                            <span class="chat-time">Kemarin</span>
+                        </div>
+                        <div class="chat-bottom-row">
+                            <span class="chat-preview">Ijazah asli saya titip dulu ya, jangan hilang!</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Bottom Navigation Bar -->
-            <div class="bg-[#1f2c34] py-3 px-6 flex justify-between items-center text-[#8696a0] border-t border-[#222d34]">
-                <div class="flex flex-col items-center text-[#00a884] cursor-pointer">
-                    <i class="fas fa-comment-alt text-lg mb-1"></i>
-                    <span class="text-[10px] font-semibold">Chats</span>
+            <!-- Floating New Chat Button -->
+            <button type="button" class="wa-fab" title="Chat Baru">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+            </button>
+
+            <!-- Bottom Navigation Bar (Chats, Updates, Communities, Calls) -->
+            <div class="wa-bottom-nav">
+                <div class="nav-item active">
+                    <div class="nav-icon-pill">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                        </svg>
+                    </div>
+                    <span>Chats</span>
                 </div>
-                <div class="flex flex-col items-center hover:text-[#e9edef] cursor-pointer">
-                    <i class="fas fa-circle-notch text-lg mb-1"></i>
-                    <span class="text-[10px]">Updates</span>
+                <div class="nav-item">
+                    <div class="nav-icon-pill">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </div>
+                    <span>Updates</span>
                 </div>
-                <div class="flex flex-col items-center hover:text-[#e9edef] cursor-pointer">
-                    <i class="fas fa-users text-lg mb-1"></i>
-                    <span class="text-[10px]">Communities</span>
+                <div class="nav-item">
+                    <div class="nav-icon-pill">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <span>Communities</span>
                 </div>
-                <div class="flex flex-col items-center hover:text-[#e9edef] cursor-pointer">
-                    <i class="fas fa-phone text-lg mb-1"></i>
-                    <span class="text-[10px]">Calls</span>
+                <div class="nav-item">
+                    <div class="nav-icon-pill">
+                        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                    </div>
+                    <span>Calls</span>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW 2: WHATSAPP CALL INTERFACE (Hidden initially) -->
-        <div id="callInterface" class="absolute inset-0 bg-gradient-to-b from-[#111b21] via-[#1f2c34] to-[#0b141a] z-20 flex flex-col justify-between p-6 opacity-0 pointer-events-none transition-opacity duration-500">
-            
-            <!-- Call Header -->
-            <div class="flex flex-col items-center pt-8 space-y-2">
-                <div class="flex items-center space-x-1.5 text-xs text-gray-400 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">
-                    <i class="fas fa-lock text-[10px] text-[#00a884]"></i>
-                    <span>End-to-end encrypted</span>
+        <!-- ======================================================================
+             VIEW 2: ACTIVE WHATSAPP CALL SCREEN (Exact Reference Layout)
+             ====================================================================== -->
+        <div id="call-screen">
+            <div>
+                <!-- iOS Status Bar -->
+                <div class="ios-status-bar">
+                    <div class="status-left">
+                        <span class="live-clock">1:28</span>
+                        <span class="status-wa-pill">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771z"/>
+                            </svg>
+                        </span>
+                        <span class="status-dots">•••</span>
+                    </div>
+                    <div class="status-right">
+                        <span class="dnd-badge">✕</span>
+                        <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor">
+                            <rect x="0" y="8" width="2.5" height="4" rx="0.5"/>
+                            <rect x="4" y="6" width="2.5" height="6" rx="0.5"/>
+                            <rect x="8" y="3" width="2.5" height="9" rx="0.5"/>
+                            <rect x="12" y="0" width="2.5" height="12" rx="0.5"/>
+                        </svg>
+                        <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor">
+                            <path d="M8 9.6a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8zm-3.6-2.2a5.2 5.2 0 0 1 7.2 0l1.2-1.3a7 7 0 0 0-9.6 0l1.2 1.3zm-2.5-2.6a8.8 8.8 0 0 1 12.2 0l1.2-1.3a10.6 10.6 0 0 0-14.6 0l1.2 1.3z"/>
+                        </svg>
+                        <div class="battery-pill">
+                            <span class="battery-body">69</span>
+                            <span class="battery-tip"></span>
+                        </div>
+                        <span class="green-dot"></span>
+                    </div>
                 </div>
-                <h2 class="text-2xl font-bold text-[#e9edef] tracking-wide mt-2">Prabowo Subianto</h2>
-                <p id="callStatusTimer" class="text-sm text-[#00a884] font-medium animate-pulse">Memanggil...</p>
+
+                <!-- Call Header (Minimize Left, Name + Encryption Center, Add Person Right) -->
+                <div class="call-header">
+                    <button type="button" class="call-header-circle-btn" title="Minimize">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="4 14 10 14 10 20"/>
+                            <polyline points="20 10 14 10 14 4"/>
+                            <line x1="14" y1="10" x2="21" y2="3"/>
+                            <line x1="3" y1="21" x2="10" y2="14"/>
+                        </svg>
+                    </button>
+
+                    <div class="call-header-center">
+                        <div id="call-caller-name" class="call-caller-name">Prabowo Subianto</div>
+                        <div class="call-encrypted-row">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                            </svg>
+                            <span>End-to-end encrypted</span>
+                        </div>
+                        <div id="call-timer" class="call-timer-text">00:00</div>
+                    </div>
+
+                    <button type="button" class="call-header-circle-btn" title="Add participant">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <!-- Caller Display Picture (Center) -->
-            <div class="flex flex-col items-center justify-center my-auto">
-                <div class="relative">
-                    <div class="absolute -inset-4 bg-[#00a884]/20 rounded-full blur-xl animate-pulse"></div>
-                    <img src="prabowo.jpg" alt="Prabowo Subianto" class="w-60 h-60 rounded-full object-cover border-4 border-[#222d34] shadow-2xl relative z-10">
-                </div>
+            <!-- Center Circular Caller Display Picture -->
+            <div class="call-avatar-stage">
+                <img id="call-main-avatar" class="call-main-avatar" src="prabowo.jpg" alt="Prabowo Subianto">
             </div>
 
-            <!-- Call Control Buttons Bottom Sheet -->
-            <div class="space-y-6 pb-6">
-                <!-- Secondary Controls Row -->
-                <div class="grid grid-cols-5 gap-3 max-w-xs mx-auto">
-                    <!-- Speaker -->
-                    <button id="speakerBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
-                        <i class="fas fa-volume-up text-sm"></i>
-                    </button>
-                    <!-- Video -->
-                    <button id="videoBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
-                        <i class="fas fa-video text-sm"></i>
-                    </button>
-                    <!-- Mute -->
-                    <button id="muteBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
-                        <i class="fas fa-microphone text-sm"></i>
-                    </button>
-                    <!-- More -->
-                    <button id="moreBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
-                        <i class="fas fa-ellipsis-h text-sm"></i>
-                    </button>
-                    <!-- Share -->
-                    <button id="shareBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
-                        <i class="fas fa-share-alt text-sm"></i>
-                    </button>
-                </div>
+            <!-- Bottom 3x2 Rounded Dark Control Card -->
+            <div class="call-controls-wrapper">
+                <div class="call-controls-card">
+                    <div class="controls-grid">
+                        <!-- 1. Speaker -->
+                        <div class="control-cell">
+                            <button type="button" class="control-circle-btn toggle-control" aria-label="Speaker">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                                </svg>
+                            </button>
+                            <span class="control-label">Speaker</span>
+                        </div>
 
-                <!-- Primary End Call Button -->
-                <div class="flex justify-center pt-2">
-                    <button id="endCallBtn" class="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-xl transition active:scale-95" title="Akhiri Panggilan">
-                        <i class="fas fa-phone-slash text-xl"></i>
-                    </button>
+                        <!-- 2. Video -->
+                        <div class="control-cell">
+                            <button type="button" class="control-circle-btn toggle-control" aria-label="Video">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                                </svg>
+                            </button>
+                            <span class="control-label">Video</span>
+                        </div>
+
+                        <!-- 3. Mute -->
+                        <div class="control-cell">
+                            <button type="button" class="control-circle-btn toggle-control" aria-label="Mute">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>
+                                </svg>
+                            </button>
+                            <span class="control-label">Mute</span>
+                        </div>
+
+                        <!-- 4. More -->
+                        <div class="control-cell">
+                            <button type="button" class="control-circle-btn toggle-control" aria-label="More">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="6" cy="12" r="2"/>
+                                    <circle cx="12" cy="12" r="2"/>
+                                    <circle cx="18" cy="12" r="2"/>
+                                </svg>
+                            </button>
+                            <span class="control-label">More</span>
+                        </div>
+
+                        <!-- 5. Share -->
+                        <div class="control-cell">
+                            <button type="button" class="control-circle-btn toggle-control" aria-label="Share">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-6 9v4h-2v-4H8l4-4 4 4h-3z"/>
+                                </svg>
+                            </button>
+                            <span class="control-label">Share</span>
+                        </div>
+
+                        <!-- 6. End Call -->
+                        <div class="control-cell">
+                            <button id="btn-end-call" type="button" class="control-circle-btn end-btn" aria-label="End Call">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.956.956 0 0 1-.29-.7c0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28a11.27 11.27 0 0 0-2.67-1.85.996.996 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/>
+                                </svg>
+                            </button>
+                            <span class="control-label">End</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-
         </div>
 
+        <!-- ======================================================================
+             CUSTOMIZATION SETTINGS MODAL (Click 3 dots in Home Screen header)
+             ====================================================================== -->
+        <div id="settings-modal">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <span class="modal-title">Pengaturan Prank Call</span>
+                    <button id="close-settings-btn" type="button" class="icon-btn" aria-label="Tutup">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cfg-name">Nama Penelpon</label>
+                    <input id="cfg-name" class="form-input" type="text">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cfg-avatar">URL Display Picture (Foto Profil)</label>
+                    <input id="cfg-avatar" class="form-input" type="url">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cfg-ringtone">URL Ringtone (.mp3)</label>
+                    <input id="cfg-ringtone" class="form-input" type="url">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cfg-voice">URL Audio Panggilan / Suara (.mp3)</label>
+                    <input id="cfg-voice" class="form-input" type="url">
+                </div>
+
+                <div class="modal-footer">
+                    <button id="test-call-btn" type="button" class="modal-btn modal-btn-secondary">Tes Panggilan</button>
+                    <button id="save-settings-btn" type="button" class="modal-btn modal-btn-primary">Simpan</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- JavaScript Logic -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const incomingNotification = document.getElementById('incomingNotification');
-            const chatHomeScreen = document.getElementById('chatHomeScreen');
-            const callInterface = document.getElementById('callInterface');
-            
-            const ringtoneAudio = document.getElementById('ringtoneAudio');
-            const callAudio = document.getElementById('callAudio');
-            
-            const declineBtn = document.getElementById('declineBtn');
-            const answerBtn = document.getElementById('answerBtn');
-            const endCallBtn = document.getElementById('endCallBtn');
-            
-            const callStatusTimer = document.getElementById('callStatusTimer');
-            
-            let callTimerInterval = null;
-            let secondsElapsed = 0;
+        /* ==========================================================================
+           KONFIGURASI UTAMA (Silakan ubah URL foto atau file .mp3 di sini)
+           ========================================================================== */
+        const CONFIG = {
+            callerName: "Prabowo Subianto",
+            avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop&q=85",
+            ringtoneUrl: "https://pixabay.com/sound-effects/musical-ringtone-030-437513/",
+            ringtoneFallbackUrl: "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_clock.ogg",
+            callVoiceUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+            incomingDelayMs: 5000 // 5 detik setelah halaman dimuat
+        };
 
-            // 1. After web loaded, 5 seconds later trigger ringtone and notification card
-            setTimeout(() => {
-                // Slide down notification
-                incomingNotification.classList.remove('-translate-y-full');
-                incomingNotification.classList.add('translate-y-0');
+        (function initWhatsAppPrank() {
+            // DOM Elements
+            const homeScreen = document.getElementById("home-screen");
+            const callScreen = document.getElementById("call-screen");
+            const incomingBanner = document.getElementById("incoming-banner");
 
-                // Play ringtone audio
-                ringtoneAudio.play().catch(error => {
-                    console.log("Audio autoplay prevented by browser policy:", error);
+            const ringtoneAudio = document.getElementById("ringtone-audio");
+            const callVoiceAudio = document.getElementById("call-voice-audio");
+
+            const btnDecline = document.getElementById("btn-decline");
+            const btnAnswer = document.getElementById("btn-answer");
+            const btnEndCall = document.getElementById("btn-end-call");
+            const callTimerEl = document.getElementById("call-timer");
+
+            // Settings Modal Elements
+            const settingsModal = document.getElementById("settings-modal");
+            const openSettingsBtn = document.getElementById("open-settings-btn");
+            const closeSettingsBtn = document.getElementById("close-settings-btn");
+            const saveSettingsBtn = document.getElementById("save-settings-btn");
+            const testCallBtn = document.getElementById("test-call-btn");
+
+            const cfgName = document.getElementById("cfg-name");
+            const cfgAvatar = document.getElementById("cfg-avatar");
+            const cfgRingtone = document.getElementById("cfg-ringtone");
+            const cfgVoice = document.getElementById("cfg-voice");
+
+            let timerInterval = null;
+            let elapsedSeconds = 0;
+            let synthRingtoneInterval = null;
+            let audioCtx = null;
+
+            // Update status bar clock to live local time
+            function updateClock() {
+                const now = new Date();
+                const hours = now.getHours();
+                const mins = String(now.getMinutes()).padStart(2, "0");
+                document.querySelectorAll(".live-clock").forEach(el => {
+                    el.textContent = `${hours}:${mins}`;
                 });
-            }, 5000);
+            }
+            updateClock();
+            setInterval(updateClock, 15000);
 
-            // 2. Decline button click (does not work / nothing happens as requested)
-            declineBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                // Do absolutely nothing when clicked
-                console.log("Tombol tolak diklik, tetapi tidak berfungsi.");
-            });
+            // Sync CONFIG values into UI
+            function syncConfigToUI() {
+                document.getElementById("banner-title").textContent = `${CONFIG.callerName}`;
+                document.getElementById("chat-list-name").textContent = CONFIG.callerName;
+                document.getElementById("call-caller-name").textContent = CONFIG.callerName;
 
-            // 3. Answer button click
-            answerBtn.addEventListener('click', () => {
-                // Stop ringtone audio
+                const fallbackImg = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80";
+                ["banner-avatar", "chat-list-avatar", "call-main-avatar"].forEach(id => {
+                    const img = document.getElementById(id);
+                    img.onerror = () => { img.src = fallbackImg; };
+                    img.src = CONFIG.avatarUrl;
+                });
+
+                ringtoneAudio.src = CONFIG.ringtoneUrl;
+                callVoiceAudio.src = CONFIG.callVoiceUrl;
+            }
+            syncConfigToUI();
+
+            // Web Audio API Synthesizer Fallback (if browser blocks external URL or Pixabay HTML link)
+            function startSynthRingtone() {
+                if (synthRingtoneInterval) return;
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (!audioCtx) audioCtx = new AudioContext();
+                    if (audioCtx.state === "suspended") audioCtx.resume();
+
+                    const playChime = () => {
+                        if (!incomingBanner.classList.contains("visible")) return;
+                        const now = audioCtx.currentTime;
+                        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                            const osc = audioCtx.createOscillator();
+                            const gain = audioCtx.createGain();
+                            osc.type = "sine";
+                            osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+                            gain.gain.setValueAtTime(0.08, now + idx * 0.14);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.35);
+                            osc.connect(gain);
+                            gain.connect(audioCtx.destination);
+                            osc.start(now + idx * 0.14);
+                            osc.stop(now + idx * 0.14 + 0.36);
+                        });
+                    };
+
+                    playChime();
+                    synthRingtoneInterval = setInterval(playChime, 2200);
+                } catch (e) {
+                    // Ignore if audio context is restricted before gesture
+                }
+            }
+
+            function stopAllRingtones() {
                 ringtoneAudio.pause();
                 ringtoneAudio.currentTime = 0;
+                if (synthRingtoneInterval) {
+                    clearInterval(synthRingtoneInterval);
+                    synthRingtoneInterval = null;
+                }
+            }
 
-                // Hide notification banner
-                incomingNotification.classList.remove('translate-y-0');
-                incomingNotification.classList.add('-translate-y-full');
+            function playRingtone() {
+                ringtoneAudio.src = CONFIG.ringtoneUrl;
+                ringtoneAudio.play().catch(() => {
+                    // Primary URL failed (e.g., Pixabay webpage URL instead of direct MP3) -> try fallback stream
+                    ringtoneAudio.src = CONFIG.ringtoneFallbackUrl;
+                    ringtoneAudio.play().catch(() => {
+                        // Browser autoplay policy blocked audio -> use Web Audio fallback
+                        startSynthRingtone();
+                    });
+                });
+            }
 
-                // Switch to WhatsApp Call interface
-                chatHomeScreen.style.opacity = '0';
-                setTimeout(() => {
-                    chatHomeScreen.classList.add('pointer-events-none');
-                    callInterface.classList.remove('opacity-0', 'pointer-events-none');
-                    callInterface.classList.add('opacity-100');
-                }, 300);
+            // Auto-unlock audio on first user interaction anywhere on screen
+            function handleFirstGesture() {
+                if (incomingBanner.classList.contains("visible") && ringtoneAudio.paused) {
+                    playRingtone();
+                }
+            }
+            document.addEventListener("pointerdown", handleFirstGesture, { once: true });
 
-                // Play call audio (.mp3 voice)
-                callAudio.play().catch(e => console.log("Call audio play error:", e));
+            // Trigger Incoming Call Notification & Ringtone
+            function triggerIncomingCall() {
+                incomingBanner.classList.add("visible");
+                playRingtone();
+            }
 
-                // Start call timer
-                secondsElapsed = 0;
-                callTimerInterval = setInterval(() => {
-                    secondsElapsed++;
-                    const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
-                    const secs = (secondsElapsed % 60).toString().padStart(2, '0');
-                    callStatusTimer.textContent = `${mins}:${secs}`;
+            // 5 seconds after load, start ringtone & show incoming notification card
+            setTimeout(triggerIncomingCall, CONFIG.incomingDelayMs);
+
+            // Decline Button: Intentionally non-functional (nothing happens when clicked)
+            btnDecline.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            // Answer Button: Stop ringtone, switch to WhatsApp Call screen, and play call voice audio
+            btnAnswer.addEventListener("click", () => {
+                stopAllRingtones();
+                incomingBanner.classList.remove("visible");
+
+                homeScreen.classList.add("hidden-view");
+                callScreen.classList.add("active-view");
+
+                // Play call audio (.mp3)
+                callVoiceAudio.src = CONFIG.callVoiceUrl;
+                callVoiceAudio.play().catch(() => {});
+
+                // Start call duration timer
+                elapsedSeconds = 0;
+                callTimerEl.textContent = "00:00";
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    elapsedSeconds++;
+                    const m = String(Math.floor(elapsedSeconds / 60)).padStart(2, "0");
+                    const s = String(elapsedSeconds % 60).padStart(2, "0");
+                    callTimerEl.textContent = `${m}:${s}`;
                 }, 1000);
             });
 
-            // 4. End Call button click
-            endCallBtn.addEventListener('click', () => {
-                // Stop call audio
-                callAudio.pause();
-                callAudio.currentTime = 0;
-
-                // Clear timer
-                if (callTimerInterval) clearInterval(callTimerInterval);
-
-                // Return to chat screen
-                callInterface.classList.remove('opacity-100');
-                callInterface.classList.add('opacity-0', 'pointer-events-none');
-                
-                chatHomeScreen.classList.remove('pointer-events-none');
-                chatHomeScreen.style.opacity = '1';
-                
-                // Reset notification so it won't pop up again unless reloaded
-                incomingNotification.style.display = 'none';
-            });
-
-            // Toggle buttons interactive feedback for secondary controls
-            ['speakerBtn', 'videoBtn', 'muteBtn', 'moreBtn', 'shareBtn'].forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) {
-                    btn.addEventListener('click', () => {
-                        btn.classList.toggle('bg-[#00a884]');
-                        btn.classList.toggle('bg-[#202c33]');
-                    });
+            // End Call Button: Stop call audio, stop timer, return to Home Screen
+            btnEndCall.addEventListener("click", () => {
+                callVoiceAudio.pause();
+                callVoiceAudio.currentTime = 0;
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
                 }
+
+                callScreen.classList.remove("active-view");
+                homeScreen.classList.remove("hidden-view");
             });
-        });
+
+            // Toggle states for Speaker, Video, Mute, More, Share buttons
+            document.querySelectorAll(".toggle-control").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btn.classList.toggle("toggled");
+                });
+            });
+
+            // Settings Modal Controls (3-dots button on Home Screen)
+            openSettingsBtn.addEventListener("click", () => {
+                cfgName.value = CONFIG.callerName;
+                cfgAvatar.value = CONFIG.avatarUrl;
+                cfgRingtone.value = CONFIG.ringtoneUrl;
+                cfgVoice.value = CONFIG.callVoiceUrl;
+                settingsModal.classList.add("open");
+            });
+
+            closeSettingsBtn.addEventListener("click", () => {
+                settingsModal.classList.remove("open");
+            });
+
+            saveSettingsBtn.addEventListener("click", () => {
+                CONFIG.callerName = cfgName.value.trim() || "Prabowo Subianto";
+                CONFIG.avatarUrl = cfgAvatar.value.trim() || CONFIG.avatarUrl;
+                CONFIG.ringtoneUrl = cfgRingtone.value.trim() || CONFIG.ringtoneUrl;
+                CONFIG.callVoiceUrl = cfgVoice.value.trim() || CONFIG.callVoiceUrl;
+                syncConfigToUI();
+                settingsModal.classList.remove("open");
+            });
+
+            testCallBtn.addEventListener("click", () => {
+                saveSettingsBtn.click();
+                triggerIncomingCall();
+            });
+        })();
     </script>
 </body>
 </html>
