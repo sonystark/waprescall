@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Prank Call - Sony Meydianto</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b141a;
+        }
+        /* Custom scrollbar for chat */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-0 sm:p-4">
+
+    <!-- Mobile Container Simulation -->
+    <div id="app-container" class="w-full sm:max-w-[420px] h-[100vh] sm:h-[850px] bg-[#111b21] text-[#e9edef] sm:rounded-[40px] shadow-2xl flex flex-col relative overflow-hidden border-0 sm:border-[8px] sm:border-[#202c33]">
+        
+        <!-- AUDIO ELEMENTS -->
+        <!-- Ringtone audio -->
+        <audio id="ringtoneAudio" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_clock.ogg" preload="auto" loop></audio>
+        <!-- Call Voice Audio -->
+        <audio id="callAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto" loop></audio>
+
+        <!-- TOP NOTIFICATION BANNER / CARD (Initially hidden) -->
+        <div id="incomingNotification" class="absolute top-0 left-0 right-0 z-50 transform -translate-y-full transition-transform duration-500 ease-out p-3 pointer-events-auto">
+            <div class="bg-[#202c33] border border-[#374248] shadow-2xl rounded-2xl p-4 flex items-center justify-between text-white backdrop-blur-md bg-opacity-95">
+                <div class="flex items-center space-x-3 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" alt="Sony Meydianto" class="w-12 h-12 rounded-full object-cover border-2 border-[#00a884]">
+                    <div class="truncate">
+                        <div class="flex items-center space-x-1 text-xs text-[#00a884] font-semibold">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>Panggilan masuk WhatsApp</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-[#e9edef] truncate">Prabowo Subianto</h4>
+                        <p class="text-xs text-gray-400">Ketuk untuk menjawab</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 flex-shrink-0">
+                    <!-- Decline Button: completely non-functional as requested -->
+                    <button id="declineBtn" class="w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-lg transition active:scale-95" title="Tolak">
+                        <i class="fas fa-phone-slash text-sm"></i>
+                    </button>
+                    <!-- Answer Button -->
+                    <button id="answerBtn" class="w-10 h-10 rounded-full bg-[#00a884] hover:bg-[#008f72] text-white flex items-center justify-center shadow-lg transition active:scale-95 animate-bounce" title="Jawab">
+                        <i class="fas fa-phone text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 1: WHATSAPP CHAT HOME SCREEN -->
+        <div id="chatHomeScreen" class="flex flex-col h-full w-full absolute inset-0 z-10 transition-opacity duration-300">
+            <!-- WhatsApp Header -->
+            <div class="bg-[#1f2c34] px-4 py-3 flex items-center justify-between shadow-md">
+                <div class="flex items-center space-x-2">
+                    <h1 class="text-[#e9edef] text-xl font-bold tracking-wide">WhatsApp</h1>
+                </div>
+                <div class="flex items-center space-x-5 text-[#aebac1] text-lg">
+                    <button><i class="fas fa-camera"></i></button>
+                    <button><i class="fas fa-search"></i></button>
+                    <button class="relative">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- WhatsApp Tabs -->
+            <div class="bg-[#1f2c34] flex border-b border-[#222d34] text-[#aebac1] font-medium text-sm">
+                <div class="flex-1 py-3 text-center border-b-2 border-[#00a884] text-[#00a884] cursor-pointer">Chats</div>
+                <div class="flex-1 py-3 text-center cursor-pointer">Updates</div>
+                <div class="flex-1 py-3 text-center cursor-pointer">Calls</div>
+            </div>
+
+            <!-- Chat List -->
+            <div class="flex-1 overflow-y-auto bg-[#111b21]">
+                <!-- Chat Item: Sony Meydianto -->
+                <div class="flex items-center px-4 py-3 hover:bg-[#202c33] cursor-pointer transition border-b border-[#222d34]/40">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" alt="Sony Meydianto" class="w-12 h-12 rounded-full object-cover mr-3 flex-shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h3 class="font-semibold text-sm text-[#e9edef] truncate">Prabowo Subianto</h3>
+                            <span class="text-xs text-[#00a884]">11:32</span>
+                        </div>
+                        <p class="text-xs text-[#8696a0] truncate flex items-center">
+                            <i class="fas fa-check-double text-[#00a884] mr-1"></i> Kinong, bisa telepon sekarang? Ada urusan penting...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dummy Chat 2 -->
+                <div class="flex items-center px-4 py-3 hover:bg-[#202c33] cursor-pointer transition border-b border-[#222d34]/40">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" alt="Ibu" class="w-12 h-12 rounded-full object-cover mr-3 flex-shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h3 class="font-semibold text-sm text-[#e9edef] truncate">Gibran Rakabuming Raka</h3>
+                            <span class="text-xs text-[#8696a0]">Kemarin</span>
+                        </div>
+                        <p class="text-xs text-[#8696a0] truncate">Bro lagi dimana? aku udah dipecat nih, ngopi yok.</p>
+                    </div>
+                </div>
+
+                <!-- Dummy Chat 3 -->
+                <div class="flex items-center px-4 py-3 hover:bg-[#202c33] cursor-pointer transition border-b border-[#222d34]/40">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80" alt="Grup Kantor" class="w-12 h-12 rounded-full object-cover mr-3 flex-shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h3 class="font-semibold text-sm text-[#e9edef] truncate">Grup Gym Sosok</h3>
+                            <span class="text-xs text-[#8696a0]">09:15</span>
+                        </div>
+                        <p class="text-xs text-[#8696a0] truncate">Dewa: Usah lupa bah jadwal kelak malam.</p>
+                    </div>
+                </div>
+
+                <!-- Dummy Chat 4 -->
+                <div class="flex items-center px-4 py-3 hover:bg-[#202c33] cursor-pointer transition border-b border-[#222d34]/40">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" alt="Budi" class="w-12 h-12 rounded-full object-cover mr-3 flex-shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h3 class="font-semibold text-sm text-[#e9edef] truncate">Joko Widodo</h3>
+                            <span class="text-xs text-[#8696a0]">Senin</span>
+                        </div>
+                        <p class="text-xs text-[#8696a0] truncate">Ijazah asli saya titip jangan sampai hilang ya.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-[#1f2c34] py-3 px-6 flex justify-between items-center text-[#8696a0] border-t border-[#222d34]">
+                <div class="flex flex-col items-center text-[#00a884] cursor-pointer">
+                    <i class="fas fa-comment-alt text-lg mb-1"></i>
+                    <span class="text-[10px] font-semibold">Chats</span>
+                </div>
+                <div class="flex flex-col items-center hover:text-[#e9edef] cursor-pointer">
+                    <i class="fas fa-circle-notch text-lg mb-1"></i>
+                    <span class="text-[10px]">Updates</span>
+                </div>
+                <div class="flex flex-col items-center hover:text-[#e9edef] cursor-pointer">
+                    <i class="fas fa-users text-lg mb-1"></i>
+                    <span class="text-[10px]">Communities</span>
+                </div>
+                <div class="flex flex-col items-center hover:text-[#e9edef] cursor-pointer">
+                    <i class="fas fa-phone text-lg mb-1"></i>
+                    <span class="text-[10px]">Calls</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: WHATSAPP CALL INTERFACE (Hidden initially) -->
+        <div id="callInterface" class="absolute inset-0 bg-gradient-to-b from-[#111b21] via-[#1f2c34] to-[#0b141a] z-20 flex flex-col justify-between p-6 opacity-0 pointer-events-none transition-opacity duration-500">
+            
+            <!-- Call Header -->
+            <div class="flex flex-col items-center pt-8 space-y-2">
+                <div class="flex items-center space-x-1.5 text-xs text-gray-400 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">
+                    <i class="fas fa-lock text-[10px] text-[#00a884]"></i>
+                    <span>End-to-end encrypted</span>
+                </div>
+                <h2 class="text-2xl font-bold text-[#e9edef] tracking-wide mt-2">Prabowo Subianto</h2>
+                <p id="callStatusTimer" class="text-sm text-[#00a884] font-medium animate-pulse">Memanggil...</p>
+            </div>
+
+            <!-- Caller Display Picture (Center) -->
+            <div class="flex flex-col items-center justify-center my-auto">
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-[#00a884]/20 rounded-full blur-xl animate-pulse"></div>
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80" alt="Prabowo Subianto" class="w-60 h-60 rounded-full object-cover border-4 border-[#222d34] shadow-2xl relative z-10">
+                </div>
+            </div>
+
+            <!-- Call Control Buttons Bottom Sheet -->
+            <div class="space-y-6 pb-6">
+                <!-- Secondary Controls Row -->
+                <div class="grid grid-cols-5 gap-3 max-w-xs mx-auto">
+                    <!-- Speaker -->
+                    <button id="speakerBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
+                        <i class="fas fa-volume-up text-sm"></i>
+                    </button>
+                    <!-- Video -->
+                    <button id="videoBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
+                        <i class="fas fa-video text-sm"></i>
+                    </button>
+                    <!-- Mute -->
+                    <button id="muteBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
+                        <i class="fas fa-microphone text-sm"></i>
+                    </button>
+                    <!-- More -->
+                    <button id="moreBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
+                        <i class="fas fa-ellipsis-h text-sm"></i>
+                    </button>
+                    <!-- Share -->
+                    <button id="shareBtn" class="flex flex-col items-center justify-center w-12 h-12 mx-auto rounded-full bg-[#202c33]/80 hover:bg-[#374248] text-white transition active:scale-95 shadow-md">
+                        <i class="fas fa-share-alt text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Primary End Call Button -->
+                <div class="flex justify-center pt-2">
+                    <button id="endCallBtn" class="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-xl transition active:scale-95" title="Akhiri Panggilan">
+                        <i class="fas fa-phone-slash text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const incomingNotification = document.getElementById('incomingNotification');
+            const chatHomeScreen = document.getElementById('chatHomeScreen');
+            const callInterface = document.getElementById('callInterface');
+            
+            const ringtoneAudio = document.getElementById('ringtoneAudio');
+            const callAudio = document.getElementById('callAudio');
+            
+            const declineBtn = document.getElementById('declineBtn');
+            const answerBtn = document.getElementById('answerBtn');
+            const endCallBtn = document.getElementById('endCallBtn');
+            
+            const callStatusTimer = document.getElementById('callStatusTimer');
+            
+            let callTimerInterval = null;
+            let secondsElapsed = 0;
+
+            // 1. After web loaded, 5 seconds later trigger ringtone and notification card
+            setTimeout(() => {
+                // Slide down notification
+                incomingNotification.classList.remove('-translate-y-full');
+                incomingNotification.classList.add('translate-y-0');
+
+                // Play ringtone audio
+                ringtoneAudio.play().catch(error => {
+                    console.log("Audio autoplay prevented by browser policy:", error);
+                });
+            }, 5000);
+
+            // 2. Decline button click (does not work / nothing happens as requested)
+            declineBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Do absolutely nothing when clicked
+                console.log("Tombol tolak diklik, tetapi tidak berfungsi.");
+            });
+
+            // 3. Answer button click
+            answerBtn.addEventListener('click', () => {
+                // Stop ringtone audio
+                ringtoneAudio.pause();
+                ringtoneAudio.currentTime = 0;
+
+                // Hide notification banner
+                incomingNotification.classList.remove('translate-y-0');
+                incomingNotification.classList.add('-translate-y-full');
+
+                // Switch to WhatsApp Call interface
+                chatHomeScreen.style.opacity = '0';
+                setTimeout(() => {
+                    chatHomeScreen.classList.add('pointer-events-none');
+                    callInterface.classList.remove('opacity-0', 'pointer-events-none');
+                    callInterface.classList.add('opacity-100');
+                }, 300);
+
+                // Play call audio (.mp3 voice)
+                callAudio.play().catch(e => console.log("Call audio play error:", e));
+
+                // Start call timer
+                secondsElapsed = 0;
+                callTimerInterval = setInterval(() => {
+                    secondsElapsed++;
+                    const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+                    const secs = (secondsElapsed % 60).toString().padStart(2, '0');
+                    callStatusTimer.textContent = `${mins}:${secs}`;
+                }, 1000);
+            });
+
+            // 4. End Call button click
+            endCallBtn.addEventListener('click', () => {
+                // Stop call audio
+                callAudio.pause();
+                callAudio.currentTime = 0;
+
+                // Clear timer
+                if (callTimerInterval) clearInterval(callTimerInterval);
+
+                // Return to chat screen
+                callInterface.classList.remove('opacity-100');
+                callInterface.classList.add('opacity-0', 'pointer-events-none');
+                
+                chatHomeScreen.classList.remove('pointer-events-none');
+                chatHomeScreen.style.opacity = '1';
+                
+                // Reset notification so it won't pop up again unless reloaded
+                incomingNotification.style.display = 'none';
+            });
+
+            // Toggle buttons interactive feedback for secondary controls
+            ['speakerBtn', 'videoBtn', 'muteBtn', 'moreBtn', 'shareBtn'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        btn.classList.toggle('bg-[#00a884]');
+                        btn.classList.toggle('bg-[#202c33]');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
