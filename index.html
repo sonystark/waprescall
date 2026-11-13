@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WhatsApp Prank Call - SONYSTARK</title>
     <style>
+        body {
+            -webkit-user-select: none; /* Untuk browser Safari & Chrome */
+            -ms-user-select: none;     /* Untuk Internet Explorer & Edge */
+            user-select: none;         /* Standar umum semua browser modern */
+          }
+        
         /* ==========================================================================
            1. RESET & BASE LAYOUT (Zero external dependencies for instant rendering)
            ========================================================================== */
@@ -764,7 +770,7 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
     <div id="app-frame">
         <!-- AUDIO PLAYERS -->
